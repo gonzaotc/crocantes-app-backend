@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String           @id @default(uuid())
+  createdAt DateTime        @default(now())
+  email     String          @unique
+  password  String
+
+  // Optional, not required relation with a Portfolio
+  portfolio Portfolio?
+
+  // Relationships with FinancesProviders (Many-to-Many)
+  userProviders UserFinancesProvider[]
+}
+
+model Portfolio {
+  id              String           @id @default(uuid())
+
+  // Relationship with the User.
+  // One-to-One because one User can have one Portfolio, and one Portfolio can belong only to one user
+  userId          String           @unique
+  user            User             @relation(fields: [userId], references: [id])
+  
+  // Relationship with the CurrencyBalances
+  // One-to-Many because one portfolio can hold many CurrencyBalances
+  currencyBalances CurrencyBalance[]
+}
+
+model Currency {
+  symbol    String    @id @unique 
+  createdAt DateTime  @default(now())
+  name      String    @unique 
+
+  priceInUsd Float    @default(0.0)
+  
+  currencyBalances  CurrencyBalance[]
+}
+
+model CurrencyBalance {
+  amount             Float
+  
+  currencySymbol         String 
+  currency           Currency         @relation(fields: [currencySymbol], references: [symbol])
+
+  financesProviderId String
+  financesProvider   FinancesProvider @relation(fields: [financesProviderId], references: [id])
+
+  portfolioId        String
+  portfolio          Portfolio?      @relation(fields: [portfolioId], references: [id]) 
+
+  @@id([currencySymbol, financesProviderId])
+}
+
+
+model FinancesProvider {
+  id               String           @id @default(uuid())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  name             String          @unique
+  symbol           String          @unique
+  url              String          @unique
+
+  // Relationship with CurrencyBalance (One-to-Many)
+  currencyBalances CurrencyBalance[]
+  
+  // Relationships with Users (Many-to-Many)
+  userProviders UserFinancesProvider[]
+}
+
+// Bridge table for Many-to-Many relationship between User and FinancesProvider
+// This is because, one User can have many FinancesProviders, and one FinanceProvider can be related with many Users.
+model UserFinancesProvider {
+  // Relationship with the User
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+
+  // Relationship with the Provider
+  providerId      String
+  financesProvider FinancesProvider @relation(fields: [providerId], references: [id])
+
+  @@id([userId, providerId])
+}
