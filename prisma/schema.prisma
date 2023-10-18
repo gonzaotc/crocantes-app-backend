@@ -9,81 +9,72 @@ datasource db {
 
 model User {
   id        String           @id @default(uuid())
-  createdAt DateTime        @default(now())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
   email     String          @unique
-  password  String
+  passwordHash  String
 
-  // Optional, not required relation with a Portfolio
-  portfolio Portfolio?
-
-  // Relationships with FinancesProviders (Many-to-Many)
-  userProviders UserFinancesProvider[]
+  // Relationship with Sources, One-to-Many
+  sources   Source[]
 }
 
-model Portfolio {
-  id              String           @id @default(uuid())
-
-  // Relationship with the User.
-  // One-to-One because one User can have one Portfolio, and one Portfolio can belong only to one user
-  userId          String           @unique
-  user            User             @relation(fields: [userId], references: [id])
-  
-  // Relationship with the CurrencyBalances
-  // One-to-Many because one portfolio can hold many CurrencyBalances
-  currencyBalances CurrencyBalance[]
-}
-
-model Currency {
-  symbol    String    @id @unique 
-  createdAt DateTime  @default(now())
-  name      String    @unique 
-
-  priceInUsd Float    @default(0.0)
-  
-  currencyBalances  CurrencyBalance[]
-}
-
-model CurrencyBalance {
-  amount             Float
-  
-  currencySymbol         String 
-  currency           Currency         @relation(fields: [currencySymbol], references: [symbol])
-
-  financesProviderId String
-  financesProvider   FinancesProvider @relation(fields: [financesProviderId], references: [id])
-
-  portfolioId        String
-  portfolio          Portfolio?      @relation(fields: [portfolioId], references: [id]) 
-
-  @@id([currencySymbol, financesProviderId])
-}
-
-
-model FinancesProvider {
+model SourceType {
   id               String           @id @default(uuid())
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
+
   name             String          @unique
   symbol           String          @unique
   url              String          @unique
 
-  // Relationship with CurrencyBalance (One-to-Many)
-  currencyBalances CurrencyBalance[]
-  
-  // Relationships with Users (Many-to-Many)
-  userProviders UserFinancesProvider[]
+  // Relationship with Source (One-to-Many)
+  sources          Source[]
 }
 
-// Bridge table for Many-to-Many relationship between User and FinancesProvider
-// This is because, one User can have many FinancesProviders, and one FinanceProvider can be related with many Users.
-model UserFinancesProvider {
-  // Relationship with the User
-  userId          String
-  user            User            @relation(fields: [userId], references: [id])
+model Source {
+  id               String           @id @default(uuid())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
-  // Relationship with the Provider
-  providerId      String
-  financesProvider FinancesProvider @relation(fields: [providerId], references: [id])
+  // Relationship with User (Many-to-One)
+  userId           String 
+  user             User            @relation(fields: [userId], references: [id])
 
-  @@id([userId, providerId])
+  // Relationship with SourceType (Many-to-one)
+  sourceTypeId     String
+  sourceType       SourceType      @relation(fields: [sourceTypeId], references: [id])
+
+  // Relationship with Currency (One-to-Many)
+  currencies       Currency[]
+}
+
+model CurrencyType {
+  id        String @id @default(uuid())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  symbol    String    @unique 
+  name      String    @unique 
+  price Float    @default(0.0)
+  
+  // Relationship with Currency (One-to-Many)
+  currencies       Currency[]
+}
+
+
+model Currency {
+  id        String @id @default(uuid())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  amount             Float
+
+  // Relationship with CurrencyType (Many-to-One)
+  currencyTypeId     String
+  currencyType       CurrencyType    @relation(fields: [currencyTypeId], references: [id])
+
+  // Relationship with Source (Many-to-One)
+  sourceId           String
+  source             Source          @relation(fields: [sourceId], references: [id])
 }

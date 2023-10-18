@@ -1,11 +1,13 @@
 import prisma from "../db";
 import { comparePaswords, createJWT, hashPassword } from "../modules/auth";
 
+// @TBD To be modularized, separating db data requesting from the handler
+
 export const createNewUser = async (req, res) => {
   const user = await prisma.user.create({
     data: {
       email: req.body.email,
-      password: await hashPassword(req.body.password),
+      passwordHash: await hashPassword(req.body.password),
     },
   });
 
@@ -16,23 +18,19 @@ export const createNewUser = async (req, res) => {
 export const signIn = async (req, res) => {
   const password = req.body.password;
 
-  // Get User on DB through Prisma, based on the email.
   const user = await prisma.user.findUnique({
     where: {
       email: req.body.email,
     },
   });
 
-  // user object contains the hashed password.
-  const isValid = await comparePaswords(password, user.password);
+  const isValid = await comparePaswords(password, user.passwordHash);
 
   if (!isValid) {
-    res.status(401);
-    req.json({ message: "Wrong user/password pair." });
+    req.status(401).json({ message: "Wrong user/password pair." });
     return;
   }
 
-  // Then create a token
   const token = createJWT(user);
   res.json({ token });
 };

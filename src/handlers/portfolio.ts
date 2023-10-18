@@ -1,52 +1,23 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { fetchUserSources } from "../modules/source/data";
+import { calculatePortfolio } from "../modules/portfolio/services";
 
-const prisma = new PrismaClient();
-
-export const getPortfolios = async (req: Request, res: Response) => {
-  try {
-    const portfolios = await prisma.portfolio.findMany();
-    res.json(portfolios);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching portfolios." });
-  }
-};
-
-export const getPortfolio = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const getUserPortfolio = async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   try {
-    const portfolio = await prisma.portfolio.findUnique({
-      where: { id },
-    });
-
-    if (!portfolio) {
-      return res.status(404).json({ error: "Portfolio not found." });
+    const userSources = await fetchUserSources(userId);
+    if (!userSources) {
+      res.status(404).json({ error: "Error at finding User Portfolio: User Sources not found." });
+      return;
     }
+    console.log("UserSources found for user", userId, ": ", userSources);
 
-    if (portfolio.userId !== userId) {
-      return res
-        .status(403)
-        .json({ error: "You do not have permission to access this portfolio." });
-    }
+    const userPortfolio = calculatePortfolio(userSources, userId);
 
-    res.json(portfolio);
+    console.log("Portfolio generate for the user", userId, ": ", userPortfolio);
+    res.json(userPortfolio);
   } catch (error) {
     res.status(500).json({ error: "An error occurred while fetching the portfolio." });
-  }
-};
-
-export const createPortfolio = async (req: Request, res: Response) => {
-  const userId = req.user.id;  
-  try {
-    const newPortfolio = await prisma.portfolio.create({
-      data: {
-        userId,
-      },
-    });
-    res.json(newPortfolio);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred while creating the portfolio." });
   }
 };
