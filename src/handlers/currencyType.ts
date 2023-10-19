@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import prisma from "../db";
+
 import {
+  addCurrencyType,
   fetchCurrencyTypeById,
   fetchCurrencyTypeBySymbol,
   fetchCurrencyTypes,
@@ -30,13 +31,8 @@ export const getCurrencyTypes = async (req: Request, res: Response) => {
 
 // Note: currently anyone can create a currency type, as this endpoint is public.
 export const createCurrencyType = async (req: Request, res: Response) => {
-  const { symbol, name } = req.body;
+  const { symbol, name, price } = req.body;
 
-  // Price optionally added at creation time.
-  const price = req.body.price || 0;
-
-  const CurrencyType = await prisma.currencyType.create({
-    data: { symbol: symbol.toUpperCase(), name, price },
-  });
+  const CurrencyType = await addCurrencyType(symbol, name, price);
   res.json(CurrencyType);
 };

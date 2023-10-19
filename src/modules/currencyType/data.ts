@@ -19,3 +19,14 @@ export const fetchCurrencyTypeBySymbol = async (symbol: string): Promise<Currenc
   });
   return currencyType;
 };
+
+export const addCurrencyType = async (
+  symbol: string,
+  name: string,
+  price?: number
+): Promise<CurrencyType | null> => {
+  const currencyType = await prisma.currencyType.create({
+    data: { symbol, name, price }, // If the price is not passed, Prisma will set it to null, and default to 0 on the DB.
+  });
+  return currencyType;
+};

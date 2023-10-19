@@ -26,7 +26,7 @@ model SourceType {
 
   name             String          @unique
   symbol           String          @unique
-  url              String          @unique
+  url              String?          @unique
 
   // Relationship with Source (One-to-Many)
   sources          Source[]
@@ -56,7 +56,7 @@ model CurrencyType {
 
   symbol    String    @unique 
   name      String    @unique 
-  price Float    @default(0.0)
+  price Float?    @default(0.0)
   
   // Relationship with Currency (One-to-Many)
   currencies       Currency[]
