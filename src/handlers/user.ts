@@ -1,16 +1,17 @@
 import { addUser, findUserByEmail } from "../modules/auth/data";
 import { comparePaswords, createJWT, hashPassword } from "../modules/auth/service";
 
-export const createNewUser = async (req, res) => {
-  const user = await addUser(req.body.email, await hashPassword(req.body.password));
+export const register = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await addUser(email, await hashPassword(password));
   const token = createJWT(user);
   res.json({ token });
 };
 
 export const signIn = async (req, res) => {
-  const password = req.body.password;
+  const { password, email } = req.body;
 
-  const user = await findUserByEmail(req.body.email);
+  const user = await findUserByEmail(email);
   const isValid = await comparePaswords(password, user.passwordHash);
 
   if (!isValid) {
