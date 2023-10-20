@@ -1,7 +1,7 @@
 import express from "express";
 import router from "./router";
-import { protectMiddleware } from "./modules/auth";
 import { createNewUser, signIn } from "./handlers/user";
+import { authProtectMW } from "./middlewares/authProtectMiddleware";
 
 const app = express();
 
@@ -18,14 +18,8 @@ app.use(
 //   next();
 // });
 
-app.get("/", (req, res) => {
-  console.log("hello from express");
-  res.status(200);
-  res.json({ message: "hello" });
-});
-
 // Router only applies to the /api path.
-app.use("/api", protectMiddleware, router);
+app.use("/api", authProtectMW, router);
 
 // User creation and login are not protected intentionally.
 app.post("/user", createNewUser);
