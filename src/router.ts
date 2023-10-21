@@ -2,7 +2,7 @@ import { Router } from "express";
 import { createCurrencyType, getCurrencyType, getCurrencyTypes } from "./handlers/currencyType";
 import { getUserPortfolio } from "./handlers/portfolio";
 import { createSourceType, getSourceType, getSourceTypes } from "./handlers/sourceType";
-import { createUserSource, getUserSources } from "./handlers/source";
+import { createUserSource, deleteUserSource, getUserSources } from "./handlers/source";
 import { handleInputErrorsMW } from "./middlewares/handleInputErrors";
 import { Validator } from "./validators/validators";
 
@@ -13,7 +13,8 @@ router.get("/portfolio", getUserPortfolio);
 
 // Sources
 router.get("/sources", getUserSources);
-router.post("/sources", Validator, handleInputErrorsMW, createUserSource);
+router.post("/sources", Validator.Source.create, handleInputErrorsMW, createUserSource);
+router.delete("/sources/:id", handleInputErrorsMW, deleteUserSource);
 
 // Source Types
 router.get("/sourceTypes", getSourceTypes);

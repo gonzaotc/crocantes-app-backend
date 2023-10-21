@@ -15,6 +15,6 @@ app.use(
 app.use("/api", authProtectMW, router);
 
 // User creation and login are public intentionally.
-app.use("api/auth", authRouter);
+app.use("/auth", authRouter);
 
 export default app;

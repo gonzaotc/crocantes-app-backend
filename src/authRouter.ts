@@ -5,7 +5,7 @@ import { handleInputErrorsMW } from "./middlewares/handleInputErrors";
 
 const authRouter = Router();
 
-authRouter.post("/auth/register", Validator.User.register, handleInputErrorsMW, register);
-authRouter.post("/auth/signin", Validator.User.signin, handleInputErrorsMW, signIn);
+authRouter.post("/register", Validator.User.register, handleInputErrorsMW, register);
+authRouter.post("/signin", Validator.User.signin, handleInputErrorsMW, signIn);
 
 export default authRouter;

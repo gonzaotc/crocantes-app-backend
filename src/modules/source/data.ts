@@ -15,6 +15,7 @@ export const fetchUserSourcesWithCurrenciesAndTypes = async (
       },
     },
   });
+  console.log(userSources);
   return userSources;
 };
 
@@ -46,4 +47,26 @@ export const addUserSource = async (
   });
   console.log("new source", newSource);
   return newSource;
+};
+
+export const fetchSource = async (sourceId: string) => {
+  console.log("fetching with id", sourceId);
+  const source = await prisma.source.findUnique({
+    where: { id: sourceId },
+    include: {
+      currencies: {
+        include: {
+          currencyType: true,
+        },
+      },
+      user: true,
+    },
+  });
+  return source;
+};
+
+export const removeUserSource = async (sourceId: string) => {
+  const deletedSource = await prisma.source.delete({
+    where: { id: sourceId },
+  });
 };

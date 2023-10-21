@@ -47,6 +47,10 @@ model Source {
 
   // Relationship with Currency (One-to-Many)
   currencies       Currency[]
+
+  // Enforces uniqueness of userId and sourceTypeId
+  // NOT YET IMPLEMENTED
+  @@unique([userId, sourceTypeId])
 }
 
 model CurrencyType {
@@ -76,5 +80,5 @@ model Currency {
 
   // Relationship with Source (Many-to-One)
   sourceId           String
-  source             Source          @relation(fields: [sourceId], references: [id])
+  source             Source          @relation(fields: [sourceId], references: [id], onDelete: Cascade)
 }

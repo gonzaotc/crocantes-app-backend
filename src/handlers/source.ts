@@ -1,10 +1,15 @@
 import { Request, Response } from "express";
-import { addUserSource, fetchUserSourcesWithCurrenciesAndTypes } from "../modules/source/data";
+import {
+  addUserSource,
+  fetchSource,
+  fetchUserSourcesWithCurrenciesAndTypes,
+  removeUserSource,
+} from "../modules/source/data";
 
 export const getUserSources = async (req: Request, res: Response) => {
-  const { userId } = req.user.id;
+  const userId = req.user.id;
   try {
-    const userSourcesWithCurrenciesAndTypes = fetchUserSourcesWithCurrenciesAndTypes(userId);
+    const userSourcesWithCurrenciesAndTypes = await fetchUserSourcesWithCurrenciesAndTypes(userId);
     if (!userSourcesWithCurrenciesAndTypes) {
       res.status(404).json({ error: "Error at finding User Sources: User Sources not found." });
       return;
@@ -29,5 +34,31 @@ export const createUserSource = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred while creating the source." });
+  }
+};
+
+export const deleteUserSource = async (req: Request, res: Response) => {
+  const userId = req.user.id;
+  const { id } = req.params;
+  console.log(userId, id);
+  try {
+    const source = await fetchSource(id);
+
+    if (!source) {
+      res.status(404).json({ error: "Error at deleting Source: Source not found." });
+      return;
+    }
+    if (source.userId !== userId) {
+      res.status(403).json({
+        error: "Error at deleting Source: User does not have permission to delete this Source.",
+      });
+      return;
+    }
+
+    await removeUserSource(id);
+    res.json({ message: "Source deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting the source." });
   }
 };
