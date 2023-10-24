@@ -3,8 +3,15 @@ import {
   addUserSource,
   fetchSource,
   fetchUserSourcesWithCurrenciesAndTypes,
-  removeUserSource,
+  deleteSource,
 } from "../modules/source/data";
+
+import {
+  addCurrenciesToSourceOps,
+  deleteCurrencyOps,
+  executeTransaction,
+  updateCurrencyOps,
+} from "../modules/source/operations";
 
 export const getUserSources = async (req: Request, res: Response) => {
   const userId = req.user.id;
@@ -40,7 +47,7 @@ export const createUserSource = async (req: Request, res: Response) => {
 export const deleteUserSource = async (req: Request, res: Response) => {
   const userId = req.user.id;
   const { id } = req.params;
-  console.log(userId, id);
+
   try {
     const source = await fetchSource(id);
 
@@ -55,10 +62,55 @@ export const deleteUserSource = async (req: Request, res: Response) => {
       return;
     }
 
-    await removeUserSource(id);
+    await deleteSource(id);
     res.json({ message: "Source deleted successfully." });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred while deleting the source." });
+  }
+};
+
+export const updateUserSource = async (req: Request, res: Response) => {
+  const userId = req.user.id;
+  const { id: sourceId } = req.params;
+  const { newCurrencies, updatedCurrencies, deletedCurrencies } = req.body;
+
+  try {
+    const source = await fetchSource(sourceId);
+
+    if (!source) {
+      res.status(404).json({ error: "Error at updating Source: Source not found." });
+      return;
+    }
+
+    if (source.userId !== userId) {
+      res.status(403).json({
+        error: "Error at updating Source: User does not have permission to update this Source.",
+      });
+      return;
+    }
+
+    // En tu controlador:
+    const operations = [];
+
+    if (newCurrencies && newCurrencies.length) {
+      operations.push(...addCurrenciesToSourceOps(sourceId, newCurrencies));
+    }
+
+    if (updatedCurrencies && updatedCurrencies.length) {
+      operations.push(...updateCurrencyOps(updatedCurrencies));
+    }
+
+    if (deletedCurrencies && deletedCurrencies.length) {
+      operations.push(...deleteCurrencyOps(deletedCurrencies));
+    }
+
+    await executeTransaction(operations);
+
+    const updatedSource = await fetchSource(sourceId);
+    res.json(updatedSource);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating the source." });
   }
 };

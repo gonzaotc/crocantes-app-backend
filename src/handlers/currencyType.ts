@@ -10,16 +10,7 @@ import {
 export const getCurrencyType = async (req: Request, res: Response) => {
   const { symbol, id } = req.params;
 
-  if (!symbol && !id) {
-    res.status(400).json({
-      error: "Either symbol or id must be provided.",
-    });
-    return;
-  }
-
-  const CurrencyType = symbol
-    ? await fetchCurrencyTypeById(id)
-    : await fetchCurrencyTypeBySymbol(symbol);
+  const CurrencyType = await fetchCurrencyTypeById(id);
 
   res.json(CurrencyType);
 };

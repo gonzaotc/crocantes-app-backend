@@ -15,7 +15,6 @@ export const fetchUserSourcesWithCurrenciesAndTypes = async (
       },
     },
   });
-  console.log(userSources);
   return userSources;
 };
 
@@ -45,7 +44,6 @@ export const addUserSource = async (
       },
     },
   });
-  console.log("new source", newSource);
   return newSource;
 };
 
@@ -65,8 +63,10 @@ export const fetchSource = async (sourceId: string) => {
   return source;
 };
 
-export const removeUserSource = async (sourceId: string) => {
+export const deleteSource = async (sourceId: string) => {
   const deletedSource = await prisma.source.delete({
     where: { id: sourceId },
   });
+  return deletedSource;
 };
+
