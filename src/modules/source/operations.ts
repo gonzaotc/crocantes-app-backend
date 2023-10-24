@@ -25,6 +25,7 @@ export const deleteCurrencyOps = (currencyIds: string[]) => {
   return [prisma.currency.deleteMany({ where: { id: { in: currencyIds } } })];
 };
 
+// Batch operations to avoid inconsistent data on the DB.
 export const executeTransaction = async (operations: any[]) => {
   await prisma.$transaction(operations);
 };

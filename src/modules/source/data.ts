@@ -23,7 +23,6 @@ export const addUserSource = async (
   sourceTypeId: string,
   currenciesData: CurrencyEntry[]
 ): Promise<SourceWithCurrenciesAndTypes | null> => {
-  console.log("data eceived sourceTypeId and currenciesData", userId, sourceTypeId, currenciesData);
 
   const newSource = await prisma.source.create({
     data: {
@@ -48,7 +47,6 @@ export const addUserSource = async (
 };
 
 export const fetchSource = async (sourceId: string) => {
-  console.log("fetching with id", sourceId);
   const source = await prisma.source.findUnique({
     where: { id: sourceId },
     include: {

@@ -5,7 +5,6 @@ import {
   fetchUserSourcesWithCurrenciesAndTypes,
   deleteSource,
 } from "../modules/source/data";
-
 import {
   addCurrenciesToSourceOps,
   deleteCurrencyOps,
@@ -90,7 +89,6 @@ export const updateUserSource = async (req: Request, res: Response) => {
       return;
     }
 
-    // En tu controlador:
     const operations = [];
 
     if (newCurrencies && newCurrencies.length) {
