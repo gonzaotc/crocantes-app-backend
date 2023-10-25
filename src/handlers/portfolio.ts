@@ -4,7 +4,6 @@ import { fetchUserSourcesWithCurrenciesAndTypes } from "../modules/source/data";
 
 export const getUserPortfolio = async (req: Request, res: Response) => {
   const userId = req.user.id;
-
   try {
     const userSources = await fetchUserSourcesWithCurrenciesAndTypes(userId);
     if (!userSources) {
@@ -13,6 +12,10 @@ export const getUserPortfolio = async (req: Request, res: Response) => {
     }
 
     const userPortfolio = calculatePortfolio(userSources, userId);
+    if (!userPortfolio) {
+      res.status(500).json({ error: "Error at calculating the Portfolio." });
+      return;
+    }
 
     res.json(userPortfolio);
   } catch (error) {

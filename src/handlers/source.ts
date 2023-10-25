@@ -29,7 +29,6 @@ export const getUserSources = async (req: Request, res: Response) => {
 export const createUserSource = async (req: Request, res: Response) => {
   const userId = req.user.id;
   const { sourceTypeId, currenciesData } = req.body;
-
   try {
     const newUserSource = await addUserSource(userId, sourceTypeId, currenciesData);
     if (!newUserSource) {
@@ -46,10 +45,8 @@ export const createUserSource = async (req: Request, res: Response) => {
 export const deleteUserSource = async (req: Request, res: Response) => {
   const userId = req.user.id;
   const { id } = req.params;
-
   try {
     const source = await fetchSource(id);
-
     if (!source) {
       res.status(404).json({ error: "Error at deleting Source: Source not found." });
       return;
@@ -60,7 +57,6 @@ export const deleteUserSource = async (req: Request, res: Response) => {
       });
       return;
     }
-
     await deleteSource(id);
     res.json({ message: "Source deleted successfully." });
   } catch (error) {
@@ -73,15 +69,12 @@ export const updateUserSource = async (req: Request, res: Response) => {
   const userId = req.user.id;
   const { id: sourceId } = req.params;
   const { newCurrencies, updatedCurrencies, deletedCurrencies } = req.body;
-
   try {
     const source = await fetchSource(sourceId);
-
     if (!source) {
       res.status(404).json({ error: "Error at updating Source: Source not found." });
       return;
     }
-
     if (source.userId !== userId) {
       res.status(403).json({
         error: "Error at updating Source: User does not have permission to update this Source.",
