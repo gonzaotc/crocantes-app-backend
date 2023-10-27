@@ -17,8 +17,7 @@ app.use("/api", authProtectMW, router);
 // User creation and login are public intentionally.
 app.use("/auth", authRouter);
 
-// Error handler
-// Must be implemented in each handler with a next(e) call to delegate the error to this handler.
+// Eror Handler, Must be implemented in each handler with a next(e) call to delegate the error to this handler.
 app.use((err: any, req: any, res: any, next: any) => {
   console.error("Uncached Server Error: ", err.stack);
 
