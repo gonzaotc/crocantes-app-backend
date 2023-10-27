@@ -30,3 +30,27 @@ export const addCurrencyType = async (
   });
   return currencyType;
 };
+
+export const updateCurrencyType = async (
+  id: string,
+  symbol: string,
+  name: string,
+  price: number
+): Promise<CurrencyType | null> => {
+  const currencyType = await prisma.currencyType.update({
+    where: { id },
+    data: { symbol, name, price },
+  });
+  return currencyType;
+};
+
+export const updateCurrencyTypePrice = async (
+  id: string,
+  price: number
+): Promise<CurrencyType | null> => {
+  const currencyType = await prisma.currencyType.update({
+    where: { id },
+    data: { price },
+  });
+  return currencyType;
+};
