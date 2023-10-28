@@ -21,6 +21,7 @@ export const updateCurrencyPrices = async () => {
 
     // Merge Data
     const data = [...coinMarketCapData, criptoYaData];
+    console.log("Obtained data from services", data);
 
     // Update Currency Prices
     data.forEach(async currencyData => {
@@ -30,6 +31,9 @@ export const updateCurrencyPrices = async () => {
       );
       if (currencyType) {
         await updateCurrencyTypePrice(currencyType.id, currencyData.price);
+        console.log(
+          `Updated Currency Type ${currencyType.symbol} Price Successfully to ${currencyData.price}.`
+        );
       }
     });
     console.log("Updated Currency Types Prices Successfully.");
