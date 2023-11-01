@@ -3,7 +3,22 @@ import router from "./router";
 import morgan from "morgan";
 import { authProtectMW } from "./middlewares/authProtectMiddleware";
 import authRouter from "./authRouter";
+import cors from "cors";
+
 const app = express();
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (origin.startsWith("http://localhost:") || origin === "http://localhost") {
+        return callback(null, true);
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
 
 app.use(morgan("dev"));
 app.use(express.json());
