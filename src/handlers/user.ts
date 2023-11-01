@@ -21,7 +21,7 @@ export const signIn = async (req, res) => {
     const isValid = await comparePaswords(password, user.passwordHash);
 
     if (!isValid) {
-      req.status(401).json({ message: "Wrong email/password pair." });
+      res.status(401).json({ message: "Wrong email/password pair." });
       return;
     }
 
@@ -29,6 +29,6 @@ export const signIn = async (req, res) => {
     res.json({ token });
   } catch (e) {
     // TODO: Improve error handling detecting the error from the error object.
-    req.status(401).json({ message: "Error at logging User. Email not found." });
+    res.status(401).json({ message: "Error at logging User. Email not found." });
   }
 };
