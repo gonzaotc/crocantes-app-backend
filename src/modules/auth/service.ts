@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { User } from "@prisma/client";
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ export const hashPassword = async password => {
  * @param {object} user - user object
  * @returns {string} - JWT token
  */
-export const createJWT = user => {
-  const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET);
+export const createJWT = (user: User) => {
+  const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
   return token;
 };
