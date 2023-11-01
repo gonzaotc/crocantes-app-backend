@@ -10,9 +10,12 @@ const app = express();
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (origin.startsWith("http://localhost:") || origin === "http://localhost") {
+      if (!origin) return callback(null, true); // allow requests with no origin (like mobile apps or curl requests)
+      const allowedOrigins = ["http://localhost", "https://crocantes-app.vercel.app"];
+      const isOriginAllowed = allowedOrigins.some(allowedOrigin => {
+        return origin.startsWith(allowedOrigin);
+      });
+      if (isOriginAllowed) {
         return callback(null, true);
       }
       callback(new Error("Not allowed by CORS"));
