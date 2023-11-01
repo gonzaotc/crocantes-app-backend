@@ -6,7 +6,7 @@ export const register = async (req, res) => {
   try {
     const user = await addUser(email, await hashPassword(password));
     const token = createJWT(user);
-    res.json({ token });
+    res.json({ token, user });
   } catch (e) {
     // TODO: Improve error handling detecting the error from the error object.
     res.status(400).json({ message: "Error at registering user. Email already registered." });
@@ -26,7 +26,7 @@ export const signIn = async (req, res) => {
     }
 
     const token = createJWT(user);
-    res.json({ token });
+    res.json({ token, user });
   } catch (e) {
     // TODO: Improve error handling detecting the error from the error object.
     res.status(401).json({ message: "Error at logging User. Email not found." });
