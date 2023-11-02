@@ -5,6 +5,7 @@ import { addSourceType, fetchSourceType, fetchSourceTypes } from "../modules/sou
 export const getSourceTypes = async (req: Request, res: Response) => {
   try {
     const sourceTypes = await fetchSourceTypes();
+
     if (!sourceTypes) {
       res.status(404).json({ error: "Source Types not found." });
       return;

@@ -20,8 +20,8 @@ export const getCurrencyType = async (req: Request, res: Response) => {
 
 export const getCurrencyTypes = async (req: Request, res: Response) => {
   try {
-    const currencies = fetchCurrencyTypes();
-    res.json(currencies);
+    const currencyTypes = await fetchCurrencyTypes();
+    res.json(currencyTypes);
   } catch (e) {
     res.status(500).json({ error: "An error occurred while fetching the Currency Types." });
   }
