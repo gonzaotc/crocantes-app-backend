@@ -8,6 +8,7 @@ export const fetchUserSourcesWithCurrenciesAndTypes = async (
   const userSources = await prisma.source.findMany({
     where: { userId: userId },
     include: {
+      sourceType: true,
       currencies: {
         include: {
           currencyType: true,
