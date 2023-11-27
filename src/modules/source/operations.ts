@@ -1,5 +1,5 @@
 import prisma from "../../db";
-import { CurrencyEntry } from "../currency/types";
+import { CurrencyEntry, UpdateCurrencyEntry } from "../currency/types";
 
 export const addCurrenciesToSourceOps = (sourceId: string, newCurrencies: CurrencyEntry[]) => {
   return newCurrencies.map(currency => {
@@ -12,11 +12,28 @@ export const addCurrenciesToSourceOps = (sourceId: string, newCurrencies: Curren
   });
 };
 
-export const updateCurrencyOps = (updatedCurrencies: { id: string; amount: number }[]) => {
-  return updatedCurrencies.map(currency => {
+export const updateCurrencyOps = (updatedCurrencies: UpdateCurrencyEntry[]) => {
+  return updatedCurrencies.map((currency) => {
+
+    const dataToUpdate: {
+      amount?: number,
+      apy?: number,
+      apr?: number,
+    } = {}
+
+    if (currency.amount !== undefined) {
+      dataToUpdate.amount = currency.amount;
+    }
+    if (currency.apy !== undefined) {
+      dataToUpdate.apy = currency.apy;
+    }
+    if (currency.apr !== undefined) {
+      dataToUpdate.apr = currency.apr;
+    }
+
     return prisma.currency.update({
       where: { id: currency.id },
-      data: { amount: currency.amount },
+      data: dataToUpdate,
     });
   });
 };

@@ -6,5 +6,14 @@ export interface CurrencyWithType extends Currency {
 
 export interface CurrencyEntry {
   currencyTypeId: string;
-  amount: number;
+  amount?: number;
+  apy?: number;
+  apr?: number;
+}
+
+export interface UpdateCurrencyEntry {
+  id: string;
+  amount?: number;
+  apy?: number;
+  apr?: number;
 }

@@ -12,6 +12,8 @@ export const Validator = {
       body("currenciesData").exists().isArray(),
       body("currenciesData.*.currencyTypeId").exists().isString(),
       body("currenciesData.*.amount").exists().isNumeric(),
+      body("currenciesData.*.apy").optional().isNumeric(),
+      body("currenciesData.*.apr").optional().isNumeric(),
     ],
     update: [
       param("id").exists().isString(),
@@ -19,10 +21,14 @@ export const Validator = {
       body("newCurrencies").optional().isArray(),
       body("newCurrencies.*.currencyTypeId").exists().isString(),
       body("newCurrencies.*.amount").exists().isNumeric(),
+      body("newCurrencies.*.apy").optional().isNumeric(),
+      body("newCurrencies.*.apr").optional().isNumeric(),
 
       body("updatedCurrencies").optional().isArray(),
       body("updatedCurrencies.*.id").exists().isString(),
-      body("updatedCurrencies.*.amount").exists().isNumeric(),
+      body("updatedCurrencies.*.amount").optional().isNumeric(),
+      body("updatedCurrencies.*.apy").optional().isNumeric(),
+      body("updatedCurrencies.*.apr").optional().isNumeric(),
 
       body("deletedCurrencies").optional().isArray(),
       body("deletedCurrencies.*").exists().isString(),
