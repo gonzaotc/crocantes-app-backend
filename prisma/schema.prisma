@@ -72,7 +72,9 @@ model Currency {
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
 
-  amount             Float
+  amount             Float @default(0.0)
+  apy Float    @default(0.0)
+  apr Float    @default(0.0)
 
   // Relationship with CurrencyType (Many-to-One)
   currencyTypeId     String
