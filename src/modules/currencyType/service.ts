@@ -14,7 +14,7 @@ export const updateCurrencyPrices = async () => {
     const criptoYaData = await requestCriptoYaARS();
 
     // Filter the already obtained ARS
-    const coinMarketCapSymbols = currencySymbols.filter(symbol => symbol !== "ARS");
+    const coinMarketCapSymbols = currencySymbols.filter(symbol => symbol !== "ARS" && symbol !== "USD");
 
     // Get Currency Prices from services
     const coinMarketCapData = await requestCoinMarketCap(coinMarketCapSymbols, "USD");

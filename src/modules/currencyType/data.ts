@@ -54,3 +54,11 @@ export const updateCurrencyTypePrice = async (
   });
   return currencyType;
 };
+
+
+export const deleteCurrencyType = async (id: string): Promise<CurrencyType | null> => {
+  const currencyType = await prisma.currencyType.delete({
+    where: { id },
+  });
+  return currencyType;
+}

@@ -5,7 +5,19 @@ export const calculatePortfolio = (
   sources: SourceWithCurrenciesAndTypes[],
   userId: string
 ): UserPortfolio => {
-  const extendedSources: ExtendedSource[] = sources.map(source => {
+
+  const sourcesWithSortedCurrencies = sources.map(source => {
+    const sortedCurrencies = source.currencies.sort(
+      (a, b) => b.amount * b.currencyType.price - a.amount * a.currencyType.price
+    );
+    return {
+      ...source,
+      currencies: sortedCurrencies,
+    };
+  }
+  );
+
+  const extendedSources: ExtendedSource[] = sourcesWithSortedCurrencies.map(source => {
     const totalBalance = source.currencies.reduce(
       (acc, curr) => acc + curr.amount * curr.currencyType.price,
       0
@@ -25,9 +37,13 @@ export const calculatePortfolio = (
     };
   });
 
+  const sortedPortfolioSources = extendedPortfolioSources.sort(
+    (a, b) => b.portfolioPercentage - a.portfolioPercentage
+  );
+
   return {
     userId: userId,
     totalBalance: portfolioTotalBalance,
-    extendedSources: extendedPortfolioSources,
+    extendedSources: sortedPortfolioSources,
   };
 };

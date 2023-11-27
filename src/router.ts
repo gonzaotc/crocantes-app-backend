@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCurrencyType, getCurrencyType, getCurrencyTypes } from "./handlers/currencyType";
+import { createCurrencyType, getCurrencyType, getCurrencyTypes, handleDeleteCurrencyType } from "./handlers/currencyType";
 import { getUserPortfolio } from "./handlers/portfolio";
 import { createSourceType, getSourceType, getSourceTypes } from "./handlers/sourceType";
 import {
@@ -35,6 +35,12 @@ router.post(
   Validator.CurrencyType.create,
   handleInputErrorsMW,
   createCurrencyType
+);
+router.delete(
+  "/currencyTypes/:id",
+  Validator.CurrencyType.delete,
+  handleInputErrorsMW,
+  handleDeleteCurrencyType
 );
 
 export default router;

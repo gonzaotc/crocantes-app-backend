@@ -45,6 +45,7 @@ export const Validator = {
       body("symbol").exists().isString(),
       body("url").optional().isString(),
     ],
+    delete: [param("id").exists().isString()],
   },
 
   CurrencyType: {
@@ -54,5 +55,6 @@ export const Validator = {
       body("name").exists().isString(),
       body("price").exists().optional().isNumeric(),
     ],
+    delete: [param("id").exists().isString()],
   },
 };

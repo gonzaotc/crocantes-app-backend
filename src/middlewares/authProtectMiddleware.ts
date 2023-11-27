@@ -13,8 +13,8 @@ export const authProtectMW = async (req, res, next) => {
   const token = bearer.split(" ")[1];
 
   if (!token) {
-    req.status(401);
-    req.json({ message: "not authorized, the proken provided is not valid." });
+    res.status(401);
+    res.json({ message: "not authorized, the proken provided is not valid." });
     return;
   }
 

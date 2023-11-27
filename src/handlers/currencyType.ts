@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import {
   addCurrencyType,
+  deleteCurrencyType,
   fetchCurrencyTypeById,
   fetchCurrencyTypeBySymbol,
   fetchCurrencyTypes,
@@ -37,3 +38,19 @@ export const createCurrencyType = async (req: Request, res: Response) => {
     res.status(500).json({ error: "An error occurred while creating the Currency Type." });
   }
 };
+
+export const handleDeleteCurrencyType = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const CurrencyType = await fetchCurrencyTypeById(id);
+    if (!CurrencyType) {
+      res.status(404).json({ error: "Currency Type not found." });
+      return;
+    }
+    await deleteCurrencyType(id);
+    res.json(CurrencyType);
+  } catch (e) {
+    res.status(500).json({ error: "An error occurred while deleting the Currency Type." });
+  }
+}
+
