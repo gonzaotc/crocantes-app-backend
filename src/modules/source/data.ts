@@ -33,6 +33,8 @@ export const addUserSource = async (
         create: currenciesData.map(currencyData => ({
           currencyTypeId: currencyData.currencyTypeId,
           amount: currencyData.amount,
+          apr: currencyData.apr,
+          apy: currencyData.apy,
         })),
       },
     },
